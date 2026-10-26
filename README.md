@@ -1,67 +1,49 @@
-<h1><p align="center">
-  <img src="./assets/images/ladybird.png" alt="Ladybird Logo" width="128">
-  <img src="./assets/images/appimage.png" alt="AppImage Logo" width="128">
-  <br>Ladybird AppImage<br>
-  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">
-  <img src="https://github.com/pkgforge-dev/ladybird-appimage/actions/workflows/appimage.yml/badge.svg" alt="Build Status">
-  <img src="https://img.shields.io/github/v/release/pkgforge-dev/ladybird-appimage" alt="GitHub Release">
-  <img src="https://img.shields.io/github/release-date/pkgforge-dev/ladybird-appimage" alt="GitHub Release Date">
-  <img src="https://img.shields.io/github/downloads/pkgforge-dev/ladybird-appimage/total" alt="GitHub Downloads (all assets/images, all releases)">
-  <img src="https://img.shields.io/github/downloads/pkgforge-dev/ladybird-appimage/latest/total" alt="GitHub Downloads (all assets/images, latest release)">
-</p></h1>
+# Ladybird Browser AppImage
 
-This repository provides build scripts to create a Universal AppImage for [Ladybird](https://ladybird.org/). This unofficial build offers an executable AppImage compatible with any Linux distribution (Including musl based).
+This repository provides automated, weekly AppImage builds for the [Ladybird Web Browser](https://ladybird.org/), compiled directly from the latest upstream `main` branch.
 
-## ⚙️ Installation
+This project is a fork based on the original work by [pkgforge-dev](https://github.com/pkgforge-dev). It was created to restore and maintain a fully functional CI/CD build pipeline after the upstream packaging builds had been broken for several months.
 
-1. Command Line (Manual)
+## 🌟 Key Improvements & Features
 
-   Run the following commands in your terminal:
+* **Patch-Free Upstream Build:** Dropped all legacy downstream code patches. The build pipeline compiles clean, unpatched Ladybird source code directly from upstream, avoiding fragile breakages.
 
-   ```bash
-   # Download the latest AppImage package from releases
-   wget https://github.com/pkgforge-dev/ladybird-appimage/releases/download/${VERSION}/Ladybird-${VERSION}-${ARCH}.AppImage
+* **Accelerated CI Builds:** Implemented dual compiler caching using `sccache` (for Rust) and `ccache` (for C++), persisting across GitHub Actions workflow runs to drastically reduce build times.
 
-   # Make the AppImage executable
-   chmod +x Ladybird-${VERSION}-${ARCH}.AppImage
+* **Vulkan Hardware Acceleration:** Built with complete Vulkan header support (`vulkan-devel`) for modern GPU-driven rendering and fast, low-CPU video playback.
 
-   # Run the AppImage
-   ./Ladybird-${VERSION}-${ARCH}.AppImage
+* **Bypassed  Tests:** Configured with `-DBUILD_TESTING=OFF` to bypass non-essential unit-test compilation errors (such as GCC 14 `-Wrestrict` warnings) and speed up binary packaging.
 
-   # Optionally, add the AppImage to your PATH for easier access
+* **Automated Weekly Releases:** GitHub Actions automatically compiles and publishes a fresh AppImage every week via cron schedule.
 
-   # With sudo for system wide availability
-   sudo install ./Ladybird-${VERSION}-${ARCH}.AppImage /usr/local/bin/ladybird
+## 🚀 How to Use the AppImage
 
-   # Without sudo, XDG base spec mandate
-   install ./Ladybird-${VERSION}-${ARCH}.AppImage $HOME/.local/bin/ladybird
+AppImages are single-file executables that bundle the browser and its core dependencies. They run on most modern Linux distributions without installation.
 
-   # Now you can run Ladybird from anywhere using the command:
-   ladybird
-   ```
+### 1. Download
 
-1. Using [**AM**](https://github.com/ivan-hc/AM) or [**AppMan**](https://github.com/ivan-hc/AppMan) _(Choose one as appropriate)_
+Go to the [**Releases**](../../releases) page of this repository and download the latest `.AppImage` file.
 
-   ```bash
-   # Install
-   am -i ladybird
+### 2. Make it Executable
 
-   # Upgrade
-   am -u ladybird
+Open your terminal in the download folder and grant execution permissions:
 
-   # Uninstall
-   am -r ladybird
-   ```
+```
+chmod +x Ladybird-*.AppImage
 
-## ⏫ Updating
+```
 
-Since AppImages are self-contained executables, there is no formal installation process beyond setting executable permissions.
+### 3. Run
 
-1. Download the latest AppImage package from the [releases](https://github.com/pkgforge-dev/ladybird-appimage/releases) section.
-1. Follow the same steps as in the [Installation](#installation) section to make it executable and run it.
+Launch Ladybird directly from your terminal or file manager:
 
-## 🤝 Contributing
+```
+./Ladybird-*.AppImage
 
-Contributions & Bugfixes are welcome. If you like to contribute, please feel free to fork the repository and submit a pull request.
+```
 
-For any questions or discussions, please open an issue in the repository.
+## 🤝 Credits & Acknowledgments
+
+* **Original Packaging Base:** [pkgforge-dev](https://github.com/pkgforge-dev) for the initial AppImage packaging scripts.
+
+* **Ladybird Team:** [Ladybird Browser Initiative](https://github.com/LadybirdBrowser/ladybird) for building a brand-new, truly independent web engine.

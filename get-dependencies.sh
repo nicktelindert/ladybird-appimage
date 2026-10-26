@@ -9,6 +9,7 @@ echo "---------------------------------------------------------------"
 pacman -Syu --noconfirm \
 	autoconf-archive \
 	vulkan-devel	 \
+	git	\
 	nano	\
 	intel-media-driver	\
 	libva-intel-driver	\
