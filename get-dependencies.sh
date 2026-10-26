@@ -91,9 +91,9 @@ export RUSTUP_TOOLCHAIN=stable
 # Needed for the AppImage:
 # - sandbox-allow-time: allow the time() syscall in the seccomp sandbox
 # - ca-certificates: allow reading CA bundles in the sandbox and support SSL_CERT_FILE
-#for patch in ../patches/*.patch; do
-#	patch -N -p1 --forward -i "$patch"
-#done
+for patch in ../patches/*.patch; do
+	patch -N -p1 --forward -i "$patch"
+done
 
 # The Release preset builds shared libraries (lagom + vcpkg deps).
 # ENABLE_CI_BASELINE_CPU makes Ladybird target x86-64-v3 instead of
