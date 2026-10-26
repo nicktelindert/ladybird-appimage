@@ -9,7 +9,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "0 4 * * 1"
+    - cron: "0 4 * * 1" # Weekly release
   workflow_dispatch: {}
 
 jobs:
@@ -23,7 +23,6 @@ jobs:
             name: Build AppImage
             arch: x86_64
 
-    # Officiële Arch Linux container
     container: archlinux:latest
 
     env:
@@ -37,15 +36,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Initialize Arch Linux Environment
-        run: |
-          pacman -Sy --noconfirm archlinux-keyring
-          pacman -Syu --noconfirm base-devel sccache ccache
-
-      - name: Install Dependencies
-        run: /bin/sh ./get-dependencies.sh
-
-      # Restore compiler cache before build
       - name: Restore Compiler Cache (sccache & ccache)
         uses: actions/cache/restore@v4
         with:
@@ -56,10 +46,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ matrix.arch }}-build-cache-
 
+      - name: Initialize Arch Linux Environment
+        run: |
+          pacman -Sy --noconfirm archlinux-keyring
+          pacman -Syu --noconfirm base-devel sccache ccache
+
+      - name: Install Dependencies
+        run: |
+          pacman -Syu --noconfirm intel-media-driver ffmpeg
+          /bin/sh ./get-dependencies.sh
+
       - name: Make AppImage
         run: /bin/sh ./make-appimage.sh
 
-      # Always save compiler cache (even if build fails)
       - name: Save Compiler Cache (sccache & ccache)
         uses: actions/cache/save@v4
         if: always()
