@@ -42,9 +42,6 @@ if [ "$ARCH" = 'x86_64' ]; then
 	pacman -Syu --noconfirm libva-intel-driver
 fi
 
-# Use the system ANGLE package instead of building it via vcpkg, it is a huge
-# Chromium-based build and the Arch package ships the same chromium/7258 version
-make-aur-package --chaotic-aur angle
 
 # If the application needs to be manually built that has to be done down here
 echo "Building Ladybird..."
