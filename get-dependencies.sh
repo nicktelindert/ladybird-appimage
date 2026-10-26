@@ -10,6 +10,8 @@ pacman -Syu --noconfirm \
 	autoconf-archive \
 	vulkan-devel	 \
 	git	\
+	unzip \
+	pkgconfig \
 	clang	\
 	llvm	\
 	ninja	\
