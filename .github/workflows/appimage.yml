@@ -33,7 +33,7 @@ jobs:
       CMAKE_CXX_COMPILER_LAUNCHER: "ccache"
       CC: clang
       CXX: clang++
-      CMAKE_GENERATOR: Ninja
+      CMAKE_MAKE_PROGRAM: Ninja
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
