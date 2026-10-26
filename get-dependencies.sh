@@ -10,6 +10,8 @@ pacman -Syu --noconfirm \
 	autoconf-archive \
 	vulkan-devel	 \
 	git	\
+	clang	\
+	llvm	\
 	ninja	\
 	nano	\
 	intel-media-driver	\
