@@ -31,7 +31,9 @@ jobs:
       CCACHE_DIR: "/github/home/.cache/ccache"
       CMAKE_C_COMPILER_LAUNCHER: "ccache"
       CMAKE_CXX_COMPILER_LAUNCHER: "ccache"
-
+      CC: clang
+      CXX: clang++
+      CMAKE_GENERATOR: Ninja
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
