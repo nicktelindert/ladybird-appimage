@@ -9,6 +9,10 @@ echo "---------------------------------------------------------------"
 pacman -Syu --noconfirm \
 	autoconf-archive \
 	vulkan-devel	 \
+	nano	\
+	intel-media-driver	\
+	libva-intel-driver	\
+	ffmpeg	\
 	brotli           \
 	cmake            \
 	cpptrace         \
@@ -37,10 +41,6 @@ pacman -Syu --noconfirm \
 if [ "$ARCH" = 'x86_64' ]; then
 	pacman -Syu --noconfirm libva-intel-driver
 fi
-
-echo "Installing debloated packages..."
-echo "---------------------------------------------------------------"
-get-debloated-pkgs --add-common --prefer-nano intel-media-driver-mini ffmpeg-mini
 
 # Use the system ANGLE package instead of building it via vcpkg, it is a huge
 # Chromium-based build and the Arch package ships the same chromium/7258 version
@@ -86,15 +86,6 @@ export VCPKG_ROOT="$PWD/vcpkg"
 export VCPKG_DISABLE_METRICS="true"
 export RUSTUP_TOOLCHAIN=stable
 export RUSTFLAGS="-W deprecated"
-# Apply required patches:
-# From the AUR 'ladybird' package:
-# - gcc-wno-restrict: GCC emits -Wrestrict warnings which break the build because of -Werror
-# Needed for the AppImage:
-# - sandbox-allow-time: allow the time() syscall in the seccomp sandbox
-# - ca-certificates: allow reading CA bundles in the sandbox and support SSL_CERT_FILE
-#for patch in ../patches/*.patch; do
-#	patch -N -p1 --forward -i "$patch"
-#done
 
 # The Release preset builds shared libraries (lagom + vcpkg deps).
 # ENABLE_CI_BASELINE_CPU makes Ladybird target x86-64-v3 instead of
