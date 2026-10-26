@@ -87,6 +87,9 @@ export VCPKG_ROOT="$PWD/vcpkg"
 export VCPKG_DISABLE_METRICS="true"
 export RUSTUP_TOOLCHAIN=stable
 export RUSTFLAGS="-W deprecated"
+export CC=/usr/bin/clang
+export CXX=/usr/bin/clang++
+export CMAKE_MAKE_PROGRAM=/usr/bin/ninja
 
 # The Release preset builds shared libraries (lagom + vcpkg deps).
 # ENABLE_CI_BASELINE_CPU makes Ladybird target x86-64-v3 instead of
