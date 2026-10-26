@@ -2,6 +2,7 @@ name: Anylinux-AppImage
 concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
+
 on:
   schedule:
     - cron: "0 7 1/7 * *" # We default to rebuilding every 21 days, change this to your liking
@@ -18,18 +19,43 @@ jobs:
             name: Build AppImage
             arch: x86_64
           # comment out these 3 lines if aarch64 is not wanted
-#          - runs-on: ubuntu-24.04-arm
-#            name: Build AppImage
-#            arch: aarch64
+          # - runs-on: ubuntu-24.04-arm
+          #   name: Build AppImage
+          #   arch: aarch64
+
     container: ghcr.io/pkgforge-dev/archlinux:latest
+
+    env:
+      RUSTC_WRAPPER: "sccache"
+      SCCACHE_DIR: "/github/home/.cache/sccache"
+      CCACHE_DIR: "/github/home/.cache/ccache"
+      CMAKE_C_COMPILER_LAUNCHER: "ccache"
+      CMAKE_CXX_COMPILER_LAUNCHER: "ccache"
+
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
       - name: Preparing Container
         uses: pkgforge-dev/anylinux-setup-action@7ff2bdc2fe97f9a4c6a4007f5f42fb4941f49fee # v4
+
       - name: Install Dependencies
-        run: /bin/sh ./get-dependencies.sh
+        run: |
+          pacman -Syu --noconfirm sccache ccache
+          /bin/sh ./get-dependencies.sh
+
+      - name: Cache Compiler Artifacts (sccache & ccache)
+        uses: actions/cache@v4
+        with:
+          path: |
+            /github/home/.cache/sccache
+            /github/home/.cache/ccache
+          key: ${{ runner.os }}-${{ matrix.arch }}-build-cache-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.arch }}-build-cache-
+
       - name: Make AppImage
         run: /bin/sh ./make-appimage.sh
+
       - name: Upload artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -46,6 +72,6 @@ jobs:
         with:
           pattern: AppImage-*
           merge-multiple: true
-      - name: Release AppImage
-        uses: pkgforge-dev/make-stable-appimage-release@4ed3d48ccb065352b6e6c0db6d39885b201c54a0 #v1.1
 
+      - name: Release AppImage
+        uses: pkgforge-dev/make-stable-appimage-release@4ed3d48ccb065352b6e6c0db6d39885b201c54a0 # v1.1
