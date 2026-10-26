@@ -14,6 +14,11 @@ echo "Fetching quick-sharun..."
 curl -sL "https://github.com/pkgforge-dev/sharun/releases/latest/download/sharun-x86_64" -o /usr/bin/quick-sharun
 chmod +x /usr/bin/quick-sharun
 
+# Zorg dat de dynamic linker symlink aanwezig is voor sharun
+mkdir -p /lib64
+ln -sf /lib/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2 2>/dev/null || true
+export INTERPRETER="/lib/ld-linux-x86-64.so.2"
+
 # Deploy dependencies
 export LD_LIBRARY_PATH="/opt/ladybird/usr/lib:/opt/angle/usr/lib"
 quick-sharun \
