@@ -69,7 +69,7 @@ python3 - <<'EOF'
 import json
 
 system_deps = {
-    'angle', 'brotli', 'cpptrace', 'curl', 'dbus', 'fast-float', 'fmt',
+    'brotli', 'cpptrace', 'curl', 'dbus', 'fast-float', 'fmt',
     'libdwarf', 'libedit', 'libproxy', 'libpsl', 'libtommath', 'openssl',
     'sdl3', 'simdjson', 'simdutf', 'sqlite3', 'woff2',
 }
