@@ -103,6 +103,9 @@ cmake \
 	-S ./ \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DBUILD_TESTING=OFF	\
+	-DCMAKE_C_COMPILER=/usr/bin/clang \
+        -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+        -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja \
 	-DENABLE_CI_BASELINE_CPU=ON \
 	-DENABLE_LTO_FOR_RELEASE=OFF \
 	-DENABLE_INSTALL_HEADERS=OFF \
