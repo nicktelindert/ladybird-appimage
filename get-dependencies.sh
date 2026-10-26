@@ -11,7 +11,6 @@ pacman -Syu --noconfirm \
 	vulkan-devel	 \
 	git	\
 	clang	\
-	clang++	\
 	llvm	\
 	ninja	\
 	nano	\
