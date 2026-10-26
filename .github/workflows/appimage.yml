@@ -9,7 +9,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "0 4 * * 1" # Wekelijks op maandagochtend om 04:00 UTC
+    - cron: "0 4 * * 1"
   workflow_dispatch: {}
 
 jobs:
@@ -45,7 +45,7 @@ jobs:
       - name: Install Dependencies
         run: /bin/sh ./get-dependencies.sh
 
-      # 1. Restore compiler cache before build
+      # Restore compiler cache before build
       - name: Restore Compiler Cache (sccache & ccache)
         uses: actions/cache/restore@v4
         with:
@@ -59,7 +59,7 @@ jobs:
       - name: Make AppImage
         run: /bin/sh ./make-appimage.sh
 
-      # 2. Always save compiler cache (even if build fails)
+      # Always save compiler cache (even if build fails)
       - name: Save Compiler Cache (sccache & ccache)
         uses: actions/cache/save@v4
         if: always()
@@ -73,12 +73,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: AppImage-${{ matrix.arch }}
-          path: dist
+          path: dist/*
 
   release:
     if: ${{ github.ref_name == 'main' }}
     needs: [build]
-    permissions: write-all
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifacts
@@ -87,5 +88,12 @@ jobs:
           pattern: AppImage-*
           merge-multiple: true
 
-      - name: Release AppImage
-        uses: pkgforge-dev/make-stable-appimage-release@v1.1
+      - name: Create Rolling Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: continuous
+          name: Ladybird Continuous Build
+          body: |
+            Automated weekly build of Ladybird AppImage based on upstream master.
+          files: |
+            *.AppImage*
