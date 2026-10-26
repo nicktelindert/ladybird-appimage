@@ -84,7 +84,7 @@ EOF
 export VCPKG_ROOT="$PWD/vcpkg"
 export VCPKG_DISABLE_METRICS="true"
 export RUSTUP_TOOLCHAIN=stable
-
+export RUSTFLAGS="-W deprecated"
 # Apply required patches:
 # From the AUR 'ladybird' package:
 # - gcc-wno-restrict: GCC emits -Wrestrict warnings which break the build because of -Werror
