@@ -2,15 +2,14 @@
 
 set -eu
 
-ARCH=$(uname -m)
-export ARCH
+export ARCH=$(uname -m)
 export OUTPATH=./dist
 export APPDIR=./AppDir
 
 mkdir -p "$OUTPATH" "$APPDIR/usr/bin" "$APPDIR/usr/lib" "$APPDIR/usr/share"
 
 echo "1. Haal appimagetool op..."
-curl -sL "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage" -o /usr/bin/appimagetool
+curl -sL "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage" -o /usr/bin/appimagetool
 chmod +x /usr/bin/appimagetool
 
 echo "2. Kopieer Ladybird bestanden naar AppDir..."
@@ -42,6 +41,6 @@ ln -sf org.ladybird.Ladybird.png "$APPDIR/.DirIcon"
 
 echo "6. Bouw de AppImage met vanilla appimagetool..."
 
-ARCH=$ARCH appimagetool "$APPDIR" "$OUTPATH/Ladybird-$ARCH.AppImage"
+APPIMAGE_EXTRACT_AND_RUN=1 appimagetool "$APPDIR" "$OUTPATH/Ladybird-$ARCH.AppImage"
 
 echo "Done!"
