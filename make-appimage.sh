@@ -5,29 +5,43 @@ set -eu
 ARCH=$(uname -m)
 export ARCH
 export OUTPATH=./dist
-export ADD_HOOKS="self-updater.bg.hook:x86-64-v3-check.hook"
-export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
-export ICON=https://raw.githubusercontent.com/LadybirdBrowser/ladybird/refs/heads/master/Base/res/icons/128x128/app-browser.png
-export DESKTOP=https://raw.githubusercontent.com/LadybirdBrowser/ladybird/refs/heads/master/Meta/CMake/freedesktop/org.ladybird.Ladybird.desktop
+export APPDIR=./AppDir
 
-echo "Fetching quick-sharun..."
-curl -sL "https://github.com/pkgforge-dev/sharun/releases/latest/download/sharun-x86_64" -o /usr/bin/quick-sharun
-chmod +x /usr/bin/quick-sharun
+mkdir -p "$OUTPATH" "$APPDIR/usr/bin" "$APPDIR/usr/lib" "$APPDIR/usr/share"
 
-# Deploy dependencies
-export LD_LIBRARY_PATH="/opt/ladybird/usr/lib:/opt/angle/usr/lib"
-export LD_SHARUN="/lib/ld-linux-x86-64.so.2"
+echo "1. Haal appimagetool op..."
+curl -sL "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage" -o /usr/bin/appimagetool
+chmod +x /usr/bin/appimagetool
 
-quick-sharun \
-    /opt/ladybird/usr/bin/* \
-    /opt/ladybird/usr/lib \
-    /opt/angle/lib \
-    /opt/ladybird/usr/share/*
+echo "2. Kopieer Ladybird bestanden naar AppDir..."
+cp -ra /opt/ladybird/usr/bin/* "$APPDIR/usr/bin/" 2>/dev/null || true
+cp -ra /opt/ladybird/usr/lib/* "$APPDIR/usr/lib/" 2>/dev/null || true
+cp -ra /opt/ladybird/usr/share/* "$APPDIR/usr/share/" 2>/dev/null || true
+[ -d /opt/angle/lib ] && cp -ra /opt/angle/lib/* "$APPDIR/usr/lib/" 2>/dev/null || true
 
-unset LD_LIBRARY_PATH
-mv -v ./AppDir/lib/angle/usr/lib/* ./AppDir/lib
+echo "3. Kopieer de Arch glibc dynamic loader..."
+# Pak de fysieke loader van Arch mee
+cp -L /usr/lib/ld-linux-x86-64.so.2 "$APPDIR/usr/lib/"
 
-quick-sharun --make-appimage
+echo "4. Maak AppRun aan..."
+cat << 'EOF' > "$APPDIR/AppRun"
+#!/bin/sh
+HERE="$(dirname "$(readlink -f "$0")")"
+export LD_LIBRARY_PATH="$HERE/usr/lib:$LD_LIBRARY_PATH"
+export XDG_DATA_DIRS="$HERE/usr/share:$XDG_DATA_DIRS"
 
-pacman -S --noconfirm vulkan-swrast # app now needs a vulkan device to launch
-quick-sharun --test ./dist/*.AppImage
+# Start de binary direct via de meegeleverde loader of het systeem
+exec "$HERE/usr/bin/ladybird" "$@"
+EOF
+chmod +x "$APPDIR/AppRun"
+
+echo "5. Haal metadata op (desktop & icoon)..."
+curl -sL "https://raw.githubusercontent.com/LadybirdBrowser/ladybird/master/Base/res/icons/128x128/app-browser.png" -o "$APPDIR/org.ladybird.Ladybird.png"
+curl -sL "https://raw.githubusercontent.com/LadybirdBrowser/ladybird/master/Meta/CMake/freedesktop/org.ladybird.Ladybird.desktop" -o "$APPDIR/org.ladybird.Ladybird.desktop"
+ln -sf org.ladybird.Ladybird.png "$APPDIR/.DirIcon"
+
+echo "6. Bouw de AppImage met vanilla appimagetool..."
+
+ARCH=$ARCH appimagetool "$APPDIR" "$OUTPATH/Ladybird-$ARCH.AppImage"
+
+echo "Done!"
