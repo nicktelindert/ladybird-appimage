@@ -16,9 +16,9 @@ chmod +x /usr/bin/quick-sharun
 
 # Deploy dependencies
 export LD_LIBRARY_PATH="/opt/ladybird/usr/lib:/opt/angle/usr/lib"
+export LD_SHARUN="/lib/ld-linux-x86-64.so.2"
 
 quick-sharun \
-    --interpreter /lib/ld-linux-x86-64.so.2 \
     /opt/ladybird/usr/bin/* \
     /opt/ladybird/usr/lib \
     /opt/angle/lib \
