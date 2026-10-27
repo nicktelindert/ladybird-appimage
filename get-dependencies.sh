@@ -8,8 +8,10 @@ echo "Installing package dependencies..."
 echo "---------------------------------------------------------------"
 pacman -Syu --noconfirm \
 	autoconf-archive \
+	fuse2	\
 	vulkan-devel	 \
-	git	\
+	git \
+	rsync \
 	unzip \
 	pkgconfig \
 	clang	\

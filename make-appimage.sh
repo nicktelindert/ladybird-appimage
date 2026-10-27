@@ -13,10 +13,12 @@ curl -sL "https://github.com/AppImage/appimagetool/releases/download/continuous/
 chmod +x /usr/bin/appimagetool
 
 echo "2. Kopieer Ladybird bestanden naar AppDir..."
-cp -ra /opt/ladybird/usr/bin/* "$APPDIR/usr/bin/" 2>/dev/null || true
-cp -ra /opt/ladybird/usr/lib/* "$APPDIR/usr/lib/" 2>/dev/null || true
-cp -ra /opt/ladybird/usr/share/* "$APPDIR/usr/share/" 2>/dev/null || true
+rsync -a /opt/ladybird/usr/lib/	"$APPDIR/usr/lib/"
+rsync -a /opt/ladybird/usr/bin/	"$APPDIR/usr/bin/"
+rsync -a /opt/ladybird/usr/share/	"$APPDIR/usr/share/"
+
 [ -d /opt/angle/lib ] && cp -ra /opt/angle/lib/* "$APPDIR/usr/lib/" 2>/dev/null || true
+
 
 # Zoek automatisch alle afhankelijkheden van Ladybird op en kopieer ze naar AppDir
 ldd "$APPDIR/usr/bin/Ladybird" | grep -o '/usr/lib/[^ ]*' | xargs -I {} cp -L {} "$APPDIR/usr/lib/" 2>/dev/null || true
