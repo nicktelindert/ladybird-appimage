@@ -14,27 +14,20 @@ echo "Fetching quick-sharun..."
 curl -sL "https://github.com/pkgforge-dev/sharun/releases/latest/download/sharun-x86_64" -o /usr/bin/quick-sharun
 chmod +x /usr/bin/quick-sharun
 
-# Zorg dat de dynamic linker symlink aanwezig is voor sharun
-mkdir -p /lib64
-ln -sf /lib/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2 2>/dev/null || true
-export INTERPRETER="/lib/ld-linux-x86-64.so.2"
-
 # Deploy dependencies
 export LD_LIBRARY_PATH="/opt/ladybird/usr/lib:/opt/angle/usr/lib"
+
 quick-sharun \
-	/opt/ladybird/usr/bin/* \
-	/opt/ladybird/usr/lib   \
-	/opt/angle/usr/lib      \
-	/opt/ladybird/usr/share/*
+    --interpreter /lib/ld-linux-x86-64.so.2 \
+    /opt/ladybird/usr/bin/* \
+    /opt/ladybird/usr/lib \
+    /opt/angle/lib \
+    /opt/ladybird/usr/share/*
+
 unset LD_LIBRARY_PATH
-# ANGLE provides its own libEGL/libGLESv2 which must override the mesa ones,
-# otherwise the GLES symbols collide. Move them to the top of AppDir/lib.
 mv -v ./AppDir/lib/angle/usr/lib/* ./AppDir/lib
 
-# Turn AppDir into AppImage
 quick-sharun --make-appimage
 
-# Test the app for 12 seconds, if the test fails due to the app
-# having issues running in the CI use --simple-test instead
 pacman -S --noconfirm vulkan-swrast # app now needs a vulkan device to launch
 quick-sharun --test ./dist/*.AppImage
