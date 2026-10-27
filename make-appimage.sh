@@ -30,7 +30,7 @@ export LD_LIBRARY_PATH="$HERE/usr/lib:$LD_LIBRARY_PATH"
 export XDG_DATA_DIRS="$HERE/usr/share:$XDG_DATA_DIRS"
 
 # Start de binary direct via de meegeleverde loader of het systeem
-exec "$HERE/usr/bin/ladybird" "$@"
+exec "$HERE/usr/bin/Ladybird" "$@"
 EOF
 chmod +x "$APPDIR/AppRun"
 
