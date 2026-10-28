@@ -15,17 +15,9 @@ chmod +x /usr/bin/appimagetool
 echo "2. Kopieer Ladybird bestanden naar AppDir..."
 rsync -a /opt/ladybird/usr/lib/	"$APPDIR/usr/lib/"
 rsync -a /opt/ladybird/usr/bin/	"$APPDIR/usr/bin/"
-rsync -a /opt/ladybird/usr/share/	"$APPDIR/usr/share/"
-
-[ -d /opt/angle/lib ] && cp -ra /opt/angle/lib/* "$APPDIR/usr/lib/" 2>/dev/null || true
-
-
-# Zoek automatisch alle afhankelijkheden van Ladybird op en kopieer ze naar AppDir
-ldd "$APPDIR/usr/bin/Ladybird" | grep -o '/usr/lib/[^ ]*' | xargs -I {} cp -L {} "$APPDIR/usr/lib/" 2>/dev/null || true
-
-echo "3. Kopieer de Arch glibc dynamic loader..."
-# Pak de fysieke loader van Arch mee
-cp -L /usr/lib/ld-linux-x86-64.so.2 "$APPDIR/usr/lib/"
+rsync -a /opt/ladybird/usr/share/ "$APPDIR/usr/share/"
+rsync -a /opt/angle/lib/ "$APPDIR/usr/lib/"
+rsync -a /usr/lib/ "$APPDIR/usr/lib/"
 
 echo "4. Maak AppRun aan..."
 cat << 'EOF' > "$APPDIR/AppRun"
