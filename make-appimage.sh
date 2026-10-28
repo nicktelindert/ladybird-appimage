@@ -16,7 +16,6 @@ echo "2. Kopieer Ladybird bestanden naar AppDir..."
 rsync -a /opt/ladybird/usr/lib/	"$APPDIR/usr/lib/"
 rsync -a /opt/ladybird/usr/bin/	"$APPDIR/usr/bin/"
 rsync -a /opt/ladybird/usr/share/ "$APPDIR/usr/share/"
-rsync -a /opt/angle/usr/lib/ "$APPDIR/usr/lib/"
 
 echo "4. Maak AppRun aan..."
 cat << 'EOF' > "$APPDIR/AppRun"
