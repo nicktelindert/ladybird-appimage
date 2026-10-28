@@ -122,13 +122,15 @@ cmake \
 cmake --build ./Build/release
 cmake --install ./Build/release
 
-# cmake --install only installs Ladybird's own targets. The vcpkg dependencies
-# are built as shared libraries and only exist in the build tree, so copy them
-# into the install prefix for quick-sharun.
-for vcpkg_libdir in ./Build/release/vcpkg_installed/*/lib; do
-	[ -d "$vcpkg_libdir" ] || continue
-	for vcpkg_lib in "$vcpkg_libdir"/*.so*; do
-		[ -e "$vcpkg_lib" ] || continue
-		cp -a "$vcpkg_lib" /opt/ladybird/usr/lib/
-	done
+
+
+# Kopieer de vcpkg shared libraries én submappen/plugins naar de install-prefix
+for vcpkg_dir in ./Build/release/vcpkg_installed/*; do
+    [ -d "$vcpkg_dir" ] || continue
+
+    # 1. Kopieer de volledige lib-map (inclusief eventuele submappen)
+    if [ -d "$vcpkg_dir/lib" ]; then
+        echo "Kopieer vcpkg libraries uit $vcpkg_dir/lib..."
+        cp -ra "$vcpkg_dir/lib/." /opt/ladybird/usr/lib/
+    fi
 done
