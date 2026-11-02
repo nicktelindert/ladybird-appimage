@@ -20,7 +20,7 @@ fi
 cd ladybird
 
 # Build and install using ccache
-cmake --preset Release -B Build/release \
+cmake --preset Release -B Build/release -G Ninja \
   -DCMAKE_INSTALL_PREFIX="$APPDIR/usr" \
   -DCMAKE_C_COMPILER_LAUNCHER=ccache \
   -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
