@@ -12,6 +12,7 @@ rm -rf "$APPDIR"
 mkdir -p "$APPDIR/usr/lib"
 mkdir -p "$APPDIR/usr/bin"
 
+rm -rf ladybird
 # Clone ladybird repository
 if [ ! -d "ladybird" ]; then
     git clone https://github.com/LadybirdBrowser/ladybird.git
