@@ -17,9 +17,12 @@ rsync -a /opt/ladybird/usr/lib/	"$APPDIR/usr/lib/"
 rsync -a /opt/ladybird/usr/bin/	"$APPDIR/usr/bin/"
 rsync -a /opt/ladybird/usr/share/ "$APPDIR/usr/share/"
 
-LD_LIBRARY_PATH="$APPDIR/usr/lib" ldd "$APPDIR/usr/bin/Ladybird" | grep "not found" | awk '{print $1}' | while read -r lib; do
+export LD_LIBRARY_PATH="$APPDIR/usr/lib:$LD_LIBRARY_PATH"
+# Blijf libs kopieren tot ldd geen missing deps meer ziet
+MISSING_LIBS=$(ldd "$APPDIR/usr/bin/Ladybird" | grep "not found" | awk '{print $1}')
+for lib in $MISSING_LIBS; do
     if [ -f "/usr/lib/$lib" ]; then
-        echo "Automatisch toevoegen uit host /usr/lib: $lib"
+        echo " -> Mee-gekopieerd uit host: $lib"
         cp -L "/usr/lib/$lib"* "$APPDIR/usr/lib/" 2>/dev/null || true
     fi
 done
