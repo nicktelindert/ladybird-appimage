@@ -17,7 +17,7 @@ rsync -a /opt/ladybird/usr/lib/	"$APPDIR/usr/lib/"
 rsync -a /opt/ladybird/usr/bin/	"$APPDIR/usr/bin/"
 rsync -a /opt/ladybird/usr/share/ "$APPDIR/usr/share/"
 
-export LD_LIBRARY_PATH="$APPDIR/usr/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$APPDIR/usr/lib"
 # Blijf libs kopieren tot ldd geen missing deps meer ziet
 MISSING_LIBS=$(ldd "$APPDIR/usr/bin/Ladybird" | grep "not found" | awk '{print $1}')
 for lib in $MISSING_LIBS; do
