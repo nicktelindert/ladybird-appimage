@@ -17,15 +17,13 @@ rsync -a /opt/ladybird/usr/lib/	"$APPDIR/usr/lib/"
 rsync -a /opt/ladybird/usr/bin/	"$APPDIR/usr/bin/"
 rsync -a /opt/ladybird/usr/share/ "$APPDIR/usr/share/"
 
-# Kopieer expliciet de systeem-libs waar Ladybird/Qt tegen linkt:
-cp -L /usr/lib/libwoff2*.so* /opt/ladybird/usr/lib/ 2>/dev/null || true
-cp -L /usr/lib/libbrotli*.so* /opt/ladybird/usr/lib/ 2>/dev/null || true
-cp -L /usr/lib/libfreetype.so* /opt/ladybird/usr/lib/ 2>/dev/null || true
-cp -L /usr/lib/libfontconfig.so* /opt/ladybird/usr/lib/ 2>/dev/null || true
-cp -L /usr/lib/libharfbuzz.so* /opt/ladybird/usr/lib/ 2>/dev/null || true
-cp -L /usr/lib/libicu*.so* /opt/ladybird/usr/lib/ 2>/dev/null || true
+LD_LIBRARY_PATH="$APPDIR/usr/lib" ldd "$APPDIR/usr/bin/Ladybird" | grep "not found" | awk '{print $1}' | while read -r lib; do
+    if [ -f "/usr/lib/$lib" ]; then
+        echo "Automatisch toevoegen uit host /usr/lib: $lib"
+        cp -L "/usr/lib/$lib"* "$APPDIR/usr/lib/" 2>/dev/null || true
+    fi
+done
 
-# Kopieer eventuele Qt6 platform plugins van het systeem als vcpkg ze daarvan gebruikte:
 if [ -d /usr/lib/qt6/plugins ]; then
     mkdir -p /opt/ladybird/usr/lib/qt6/plugins
     cp -ra /usr/lib/qt6/plugins/. /opt/ladybird/usr/lib/qt6/plugins/
