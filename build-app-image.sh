@@ -4,7 +4,7 @@ set -e
 export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
 # Install dependencies
-pacman -S --needed --noconfirm autoconf-archive base-devel ccache cmake curl git less libgl libpulse nasm ninja python qt6-base qt6-positioning qt6-tools ttf-liberation tar unzip wayland xcb-util-wm zip
+pacman -S --needed --noconfirm autoconf-archive base-devel ccache cmake curl git less libgl libpulse nasm ninja python qt6-base qt6-positioning qt6-tools ttf-liberation tar unzip wayland xcb-util-wm zip clang
 
 # Prepare AppDir one level above ladybird
 ROOT_DIR="$(pwd)"
