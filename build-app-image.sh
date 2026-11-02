@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
 # Install dependencies
 pacman -S --needed --noconfirm autoconf-archive base-devel ccache cmake curl git less libgl libpulse nasm ninja python qt6-base qt6-positioning qt6-tools ttf-liberation tar unzip wayland xcb-util-wm zip
 
@@ -20,11 +22,8 @@ fi
 
 cd ladybird
 
-# Build and install using ccache
-cmake --preset Release -B Build/release -G Ninja \
+cmake -B Build/release -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
-  -DVCPKG_MANIFEST_MODE=OFF \
-  -DCMAKE_TOOLCHAIN_FILE="" \
   -DCMAKE_INSTALL_PREFIX="$APPDIR/usr" \
   -DCMAKE_C_COMPILER_LAUNCHER=ccache \
   -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
