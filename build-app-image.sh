@@ -2,7 +2,7 @@
 set -e
 
 # Install dependencies
-pacman -S --needed --no-confirm autoconf-archive base-devel ccache cmake curl git less libgl libpulse nasm ninja python qt6-base qt6-positioning qt6-tools ttf-liberation tar unzip wayland xcb-util-wm zip
+pacman -S --needed --noconfirm autoconf-archive base-devel ccache cmake curl git less libgl libpulse nasm ninja python qt6-base qt6-positioning qt6-tools ttf-liberation tar unzip wayland xcb-util-wm zip
 
 # Prepare AppDir one level above ladybird
 ROOT_DIR="$(pwd)"
@@ -19,13 +19,16 @@ fi
 
 cd ladybird
 
-# Build and install using the AppDir outside the ladybird directory
-cmake --preset Release -B Build/release -DCMAKE_INSTALL_PREFIX="$APPDIR/usr"
+# Build and install using ccache
+cmake --preset Release -B Build/release \
+  -DCMAKE_INSTALL_PREFIX="$APPDIR/usr" \
+  -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+  -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+
 cmake --build Build/release
 cmake --install Build/release
 
 # ldd scan
-
 cd "$ROOT_DIR"
 
 echo "=== 1. Setting up LD_LIBRARY_PATH for scanning ==="
