@@ -56,10 +56,7 @@ jobs:
       - name: Install Dependencies
         run: |
           pacman -Syu --noconfirm intel-media-driver ffmpeg
-          /bin/sh ./get-dependencies.sh
-
-      - name: Make AppImage
-        run: /bin/sh ./make-appimage.sh
+          /bin/sh ./build-app-image.sh
 
       - name: Save Compiler Cache (sccache & ccache)
         uses: actions/cache/save@v4
