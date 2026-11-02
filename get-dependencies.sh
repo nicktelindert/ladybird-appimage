@@ -123,14 +123,20 @@ cmake --build ./Build/release
 cmake --install ./Build/release
 
 
-
-# Kopieer de vcpkg shared libraries én submappen/plugins naar de install-prefix
+# Kopieer de VOLLEDIGE vcpkg-boomstructuur (lib, plugins, share, etc.)
 for vcpkg_dir in ./Build/release/vcpkg_installed/*; do
     [ -d "$vcpkg_dir" ] || continue
 
-    # 1. Kopieer de volledige lib-map (inclusief eventuele submappen)
+    echo "Kopieer alle vcpkg-bestanden en mappen uit $vcpkg_dir..."
+
+    # 1. Kopieer alle libraries uit lib/
     if [ -d "$vcpkg_dir/lib" ]; then
-        echo "Kopieer vcpkg libraries uit $vcpkg_dir/lib..."
         cp -ra "$vcpkg_dir/lib/." /opt/ladybird/usr/lib/
+    fi
+
+    # 2. Kopieer de plugins map (hier staan de Qt6 platform-plugins in!)
+    if [ -d "$vcpkg_dir/plugins" ]; then
+        mkdir -p /opt/ladybird/usr/lib/qt6/plugins
+        cp -ra "$vcpkg_dir/plugins/." /opt/ladybird/usr/lib/qt6/plugins/
     fi
 done
